@@ -5,7 +5,7 @@
         {"key":1, "user":"person1", "password": "passw0rd"},
         {"key":2, "user":"person2", "password": "passw0rd"},
         {"key":3, "user":"person3", "password": "passw0rd"},
-        {"key":4, "user":"person4", "password": "passw0rd"},
+        {"key":4, "user":"person4", "password": "passw0rd"}
       ],
       "details": {
         "keys": "AUTO_INC"

@@ -1,4 +1,3 @@
-*.json
+DB_DATA/
 .DS_Store*
-!package.json
-!test.json
+node_modules/

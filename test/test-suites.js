@@ -1,4 +1,5 @@
 const lwdb = require('../lite-web-db.js');
+lwdb.STORAGE_PATH = "./test";
 console.log(`
 LOADED DATABASE SYSTEM
 ---------------------------------------------
