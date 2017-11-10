@@ -32,8 +32,34 @@ ${JSON.stringify(db2,null,2)}
 
 
 /****************************************************************************
+* Test the data insertion
+****************************************************************************/
+const insert1 = { col1: "one",   col2: "123", col3: "blue",  col4:"MON" };
+const insert2 = { col1: "two",   col2: "456", col3: "red",   col4:"TUE" };
+const insert3 = { col1: "three", col2: "789", col3: "green", col4:"WED" };
+const insert4 = { col1: "four",  col2: "012", col3: "black", col4:"THU" };
+console.log(`
+TESTING INSERTING INTO A EMPTY DATABASE "${db2.name}"
+---------------------------------------------
+
+INSERT INTO "test1" VALUES (
+  ${JSON.stringify(db2.getTable('test1').insert(insert1))},
+  ${JSON.stringify(db2.getTable('test1').insert(insert2))},
+  ${JSON.stringify(db2.getTable('test1').insert(insert3))},
+  ${JSON.stringify(db2.getTable('test1').insert(insert4))}
+);
+
+SHOW ${db2.name}
+${JSON.stringify(db2,null,2)}
+---------------------------------------------
+`);
+
+
+
+/****************************************************************************
 * Test the data retieval
 ****************************************************************************/
+const table1 = db1.getTable("test1");
 const search0a = null;
 const search0b = {};
 const search1a = { key: "index", is: 1 };
@@ -54,30 +80,30 @@ console.log(`
 TESTING SEARCH DATABASE
 ---------------------------------------------
 (NULL TEST)
-${JSON.stringify(db1.getTableData("test1",search0a))}
+${JSON.stringify(table1.query(search0a))}
 
 (EMPTY TEST)
-${JSON.stringify(db1.getTableData("test1",search0b))}
+${JSON.stringify(table1.query(search0b))}
 
 WHERE index = 1
-${JSON.stringify(db1.getTableData("test1",search1a))}
+${JSON.stringify(table1.query(search1a))}
 
 WHERE NOT index = 1
-${JSON.stringify(db1.getTableData("test1",search1b))}
+${JSON.stringify(table1.query(search1b))}
 
 WHERE index IN (1,4)
-${JSON.stringify(db1.getTableData("test1",search2a))}
+${JSON.stringify(table1.query(search2a))}
 
 WHERE NOT index IN (1,4)
-${JSON.stringify(db1.getTableData("test1",search2b))}
+${JSON.stringify(table1.query(search2b))}
 
 WHERE isEven(index) <== {predicate function}
-${JSON.stringify(db1.getTableData("test1",search3a))}
+${JSON.stringify(table1.query(search3a))}
 
 WHERE NOT isEven(index) <== {predicate function}
-${JSON.stringify(db1.getTableData("test1",search3b))}
+${JSON.stringify(table1.query(search3b))}
 
 WHERE spiritAnimal = "bear" AND NOT password = "bearsR0ck"
-${JSON.stringify(db1.getTableData("test1",search4))}
+${JSON.stringify(table1.query(search4))}
 ---------------------------------------------
 `);

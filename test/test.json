@@ -8,7 +8,7 @@
         {"index":4, "user":"person4", "password": "bearsR0ck", "spiritAnimal": "bear"}
       ],
       "details": {
-        "keys": "AUTO_INC"
+        "length":4
       }
     }
   }

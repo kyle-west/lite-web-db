@@ -10,7 +10,7 @@ const fs = require('file-system');
 
 
 /******************************************************************************
-* Meta Data
+*
 ******************************************************************************/
 function lwDataBase (path, name, isNew) {
   this.name = name;
@@ -18,38 +18,72 @@ function lwDataBase (path, name, isNew) {
   if (isNew) {
     this.data = {
       tables: {
-        test1: {
-          rows: []
-        }
       }
     };
   } else {
     this.data = require(this.path);
   }
+
+  // assign table properties
+  var self = this;
+  Object.keys(this.data.tables).forEach((table) => {
+    self.data.tables[table].insert = self.insert;
+    self.data.tables[table].query  = self.query;
+    self.data.tables[table]._testRow  = self._testRow;
+  });
 }
 
 /******************************************************************************
-* Meta Data
+*
 ******************************************************************************/
 lwDataBase.prototype = {
   constructor: lwDataBase,
 
   /****************************************************************************
-  * Meta Data
+  * DB SCOPE
   ****************************************************************************/
-  getTableData: function (table, testSet) {
-    var matches = [];
-    var tableData = this.data.tables[table];
-
-    if (!table || !tableData) {
-      throw `Table "${table}" is not found in the ${this.name} Database`;
+  getTable: function (table) {
+    var tableObj = this.data.tables[table];
+    if (!tableObj) {
+      tableObj = {
+        rows: [],
+        details: {
+          length: 0
+        }
+      }
+      tableObj.insert = this.insert;
+      tableObj.query  = this.query;
+      tableObj._testRow  = this._testRow;
+      this.data.tables[table] = tableObj;
     }
+
+    return this.data.tables[table];
+  },
+
+  createTable: this.getTable,
+
+
+  /****************************************************************************
+  * TABLE SCOPE
+  ****************************************************************************/
+  insert: function (row) {
+    return row;
+  },
+
+
+
+  /****************************************************************************
+  * TABLE SCOPE
+  ****************************************************************************/
+  query: function (testSet) {
+    var matches = [];
+    var tableData = this;
 
     var self = this;
     switch (typeOf(testSet)) {
       case "Object":
         tableData.rows.forEach((row) => {
-          if (self.testRow(row, testSet)) matches.push(row);
+          if (self._testRow(row, testSet)) matches.push(row);
         });
         return matches;
         break;
@@ -59,7 +93,7 @@ lwDataBase.prototype = {
           var match = true;
 
           testSet.forEach((test) => {
-            match = match && self.testRow(row, test);
+            match = match && self._testRow(row, test);
           });
 
           if (match) matches.push(row);
@@ -69,17 +103,18 @@ lwDataBase.prototype = {
 
       default:
         if (tableData) {
-          return this.data.tables[table].rows;
+          return tableData.rows;
         }
     }
   },
 
-  testRow: function (row, test) {
+  /****************************************************************************
+  * TABLE SCOPE
+  ****************************************************************************/
+  _testRow: function (row, test) {
     if (!test || !row) {
       return false;
     }
-
-
 
     if (test.is) {
       if (!test.key) {
