@@ -67,6 +67,9 @@ lwDataBase.prototype = {
   * TABLE SCOPE
   ****************************************************************************/
   insert: function (row) {
+    this.details.length++;
+    row.index = this.details.length;
+    this.rows.push(row);
     return row;
   },
 
