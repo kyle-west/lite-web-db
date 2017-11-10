@@ -1,0 +1,31 @@
+{
+  "name": "lite-web-db",
+  "version": "1.0.0",
+  "description": "This is a lite weight JSON Data Base system for storing simple data.",
+  "main": "lite-web-db.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "node test/test-suites.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kyle-west/lite-web-db.git"
+  },
+  "keywords": [
+    "json",
+    "database",
+    "db",
+    "lite",
+    "web",
+    "storage",
+    "simple"
+  ],
+  "author": "Kyle West",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/kyle-west/lite-web-db/issues"
+  },
+  "homepage": "https://github.com/kyle-west/lite-web-db#readme"
+}
