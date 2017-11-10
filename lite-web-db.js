@@ -1,6 +1,17 @@
+/******************************************************************************
+* helper functions not exported, but used by the application
+******************************************************************************/
+function typeOf (obj) {
+  return Object.prototype.toString.call(obj).match(/\[object (.*)\]/)[1];
+}
+
 const fs = require('file-system');
 // fs.writeFile() // ==> function (filename, data, options, callback)
 
+
+/******************************************************************************
+* Meta Data
+******************************************************************************/
 function lwDataBase (path, name, isNew) {
   this.name = name;
   this.path = `${path}/${name}.json`;
@@ -11,8 +22,18 @@ function lwDataBase (path, name, isNew) {
   }
 }
 
+/******************************************************************************
+* Meta Data
+******************************************************************************/
 lwDataBase.prototype = {
   constructor: lwDataBase,
+
+  /****************************************************************************
+  * Meta Data
+  ****************************************************************************/
+  getData: function () {
+    return {};
+  }
 };
 
 
