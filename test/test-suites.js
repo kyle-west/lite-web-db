@@ -192,9 +192,12 @@ ${JSON.stringify(table1.query(search4))}
 /****************************************************************************
 * Test the save to disk feature
 ****************************************************************************/
+lwdb.saveToDisk(db2);
+lwdb.shutdown(db2, false);
 console.log(`
-TESTING SAVING DATABASE TO DISK "${db2.name}"
+TESTING SAVING DATABASE TO DISK AND SHUTDOWN "${db2.name}"
 ---------------------------------------------
-
+${lwdb}
+${db2}
 ---------------------------------------------
 `);

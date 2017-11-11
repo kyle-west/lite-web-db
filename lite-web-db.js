@@ -290,7 +290,7 @@ module.exports = {
   /****************************************************************************
   * Meta Data
   ****************************************************************************/
-  dbs: [],
+  dbs: {},
   STORAGE_PATH: "./DB_DATA",
 
 
@@ -299,7 +299,25 @@ module.exports = {
   ****************************************************************************/
   startup: function (name) {
     var db = new lwDataBase(this.STORAGE_PATH, name, !fs.fs.existsSync(name));
-    this.dbs.push(db);
+    this.dbs[name] = db;
     return db;
+  }
+
+  /****************************************************************************
+  *
+  ****************************************************************************/
+  shutdown: function (dbobj, saveFirst = true) {
+    if (saveFirst) {
+      this.saveToDisk(dbobj);
+    }
+    delete this.dbs[dbobj.name];
+    delete dbobj;
+  }
+
+  /****************************************************************************
+  *
+  ****************************************************************************/
+  saveToDisk: function (dbobj) {
+    fs.writeFileSync(dbobj.path,JSON.stringify(dbobj));
   }
 }
