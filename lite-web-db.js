@@ -30,6 +30,7 @@ function lwDataBase (path, name, isNew) {
     self.data.tables[table].insert = self.insert;
     self.data.tables[table].query  = self.query;
     self.data.tables[table]._testRow  = self._testRow;
+    self.data.tables[table].update  = self.update;
   });
 }
 
@@ -54,6 +55,7 @@ lwDataBase.prototype = {
       tableObj.insert = this.insert;
       tableObj.query  = this.query;
       tableObj._testRow  = this._testRow;
+      tableObj.update  = this.update;
       this.data.tables[table] = tableObj;
     }
 
@@ -71,6 +73,60 @@ lwDataBase.prototype = {
     row.index = this.details.length;
     this.rows.push(row);
     return row;
+  },
+
+
+  /****************************************************************************
+  * TABLE SCOPE
+  ****************************************************************************/
+  update: function (testSet, set) {
+    var updates = [];
+    var self = this;
+
+    switch (typeOf(testSet)) {
+      case "Object":
+        this.rows.forEach((row) => {
+          if (self._testRow(row, testSet)) {
+            Object.keys(set).forEach((col) => {
+              if (col !== "index") {
+                row[col] = set[col];
+              }
+            });
+            updates.push(row);
+          }
+        });
+        break;
+
+      case "Array":
+        this.rows.forEach((row) => {
+          var match = true;
+
+          testSet.forEach((test) => {
+            match = match && self._testRow(row, test);
+          });
+
+          if (match) {
+            Object.keys(set).forEach((col) => {
+              if (col !== "index") {
+                row[col] = set[col];
+              }
+            });
+            updates.push(row);
+          }
+        });
+        break;
+
+      default:
+        this.rows.forEach((row) => {
+          Object.keys(set).forEach((col) => {
+            if (col !== "index") {
+              row[col] = set[col];
+            }
+          });
+          updates.push(row);
+        });
+    }
+    return updates;
   },
 
 

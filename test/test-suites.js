@@ -34,6 +34,7 @@ ${JSON.stringify(db2,null,2)}
 /****************************************************************************
 * Test the data insertion
 ****************************************************************************/
+const table2 = db2.getTable('test1');
 const insert1 = { col1: "one",   col2: "123", col3: "blue",  col4:"MON" };
 const insert2 = { col1: "two",   col2: "456", col3: "red",   col4:"TUE" };
 const insert3 = { col1: "three", col2: "789", col3: "green", col4:"WED" };
@@ -43,17 +44,61 @@ TESTING INSERTING INTO A EMPTY DATABASE "${db2.name}"
 ---------------------------------------------
 
 INSERT INTO "test1" VALUES (
-  ${JSON.stringify(db2.getTable('test1').insert(insert1))},
-  ${JSON.stringify(db2.getTable('test1').insert(insert2))},
-  ${JSON.stringify(db2.getTable('test1').insert(insert3))},
-  ${JSON.stringify(db2.getTable('test1').insert(insert4))}
+  ${JSON.stringify(table2.insert(insert1))},
+  ${JSON.stringify(table2.insert(insert2))},
+  ${JSON.stringify(table2.insert(insert3))},
+  ${JSON.stringify(table2.insert(insert4))}
 );
 
-SHOW ${db2.name}
-${JSON.stringify(db2,null,2)}
+SHOW "test1"
+${JSON.stringify(table2,null,2)}
 ---------------------------------------------
 `);
 
+
+/****************************************************************************
+* Test the data update
+****************************************************************************/
+const updateTestA = {key: "index", is: 2};
+const updateSetA  = {col2: "INDEX IS 2"};
+const updateTestB = {key: "index", includes: [1,3]};
+const updateSetB  = {col2: "ODD INDEX"};
+const updateTestC = [
+  {key: "index", includes: [1,2,3], not: true},
+  {key: "col4",  includes: ["THU","FRI"]}
+];
+const updateSetC  = {col2: "LAST"};
+
+console.log(`
+TESTING UPDATING DATA IN "${db2.name}"
+---------------------------------------------
+
+UPDATE "test1" SET col2 = "INDEX IS 2" WHERE index = 2;
+${JSON.stringify(table2.update(updateTestA, updateSetA))}
+
+UPDATE "test1" SET col2 = "ODD INDEX" WHERE index IN (1,3);
+${JSON.stringify(table2.update(updateTestB, updateSetB))}
+
+UPDATE "test1" SET col2 = "LAST" WHERE NOT index IN (1,2,3) AND col4 IN ('THU','FRI');
+${JSON.stringify(table2.update(updateTestC, updateSetC))}
+
+SHOW "test1"
+${JSON.stringify(table2,null,2)}
+`);
+
+table2.update({}, {col3:"THIRD COLUMN"});
+console.log(`
+UPDATE "test1" SET col3 = "THIRD COLUMN"; SHOW "test1"
+${JSON.stringify(table2,null,2)}
+`);
+
+table2.update(null, {index:2});
+console.log(`
+UPDATE "test1" SET index = 2; SHOW "test1"
+${JSON.stringify(table2,null,2)}
+
+---------------------------------------------
+`);
 
 
 /****************************************************************************
