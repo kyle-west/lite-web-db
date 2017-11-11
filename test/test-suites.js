@@ -21,7 +21,7 @@ ${JSON.stringify(db1,null,2)}
 `);
 
 
-const db2n = 'main';
+const db2n = 'newdb';
 const db2  = lwdb.startup(db2n);
 console.log(`
 TESTING CREATING A NEW DATABASE "${db2n}"
@@ -139,7 +139,7 @@ ${JSON.stringify(table2,null,2)}
 /****************************************************************************
 * Test the data retieval
 ****************************************************************************/
-const table1 = db1.getTable("test1");
+const table1 = db1.getTable("test2");
 const search0a = null;
 const search0b = {};
 const search1a = { key: "index", is: 1 };
@@ -157,33 +157,33 @@ const search4 = [
   { key: "password",     is: "bearsR0ck", not: true }
 ];
 console.log(`
-TESTING SEARCH DATABASE
+TESTING SEARCH DATABASE "${db1.name}"
 ---------------------------------------------
-(NULL TEST)
+SELECT * FROM "test2" <== {NULL TEST}
 ${JSON.stringify(table1.query(search0a))}
 
-(EMPTY TEST)
+SELECT * FROM "test2" <== {EMPTY TEST}
 ${JSON.stringify(table1.query(search0b))}
 
-WHERE index = 1
+SELECT * FROM "test2" WHERE index = 1
 ${JSON.stringify(table1.query(search1a))}
 
-WHERE NOT index = 1
+SELECT * FROM "test2" WHERE NOT index = 1
 ${JSON.stringify(table1.query(search1b))}
 
-WHERE index IN (1,4)
+SELECT * FROM "test2" WHERE index IN (1,4)
 ${JSON.stringify(table1.query(search2a))}
 
-WHERE NOT index IN (1,4)
+SELECT * FROM "test2" WHERE NOT index IN (1,4)
 ${JSON.stringify(table1.query(search2b))}
 
-WHERE isEven(index) <== {predicate function}
+SELECT * FROM "test2" WHERE isEven(index) <== {predicate function}
 ${JSON.stringify(table1.query(search3a))}
 
-WHERE NOT isEven(index) <== {predicate function}
+SELECT * FROM "test2" WHERE NOT isEven(index) <== {predicate function}
 ${JSON.stringify(table1.query(search3b))}
 
-WHERE spiritAnimal = "bear" AND NOT password = "bearsR0ck"
+SELECT * FROM "test2" WHERE spiritAnimal = "bear" AND NOT password = "bearsR0ck"
 ${JSON.stringify(table1.query(search4))}
 ---------------------------------------------
 `);
@@ -194,10 +194,22 @@ ${JSON.stringify(table1.query(search4))}
 ****************************************************************************/
 lwdb.saveToDisk(db2);
 lwdb.shutdown(db2, false);
+lwdb.shutdown(db1);
 console.log(`
 TESTING SAVING DATABASE TO DISK AND SHUTDOWN "${db2.name}"
 ---------------------------------------------
-${lwdb}
-${db2}
+${JSON.stringify(lwdb,null,2)}
+---------------------------------------------
+`);
+
+
+/****************************************************************************
+* Test reloading saved DB
+****************************************************************************/
+var db3 = lwdb.startup(db2n);
+console.log(`
+TESTING RELOADING SAVED DATABASE "${db2.name}"
+---------------------------------------------
+${JSON.stringify(db3,null,2)}
 ---------------------------------------------
 `);

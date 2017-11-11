@@ -6,20 +6,16 @@ function typeOf (obj) {
 }
 
 const fs = require('file-system');
-// fs.writeFile() // ==> function (filename, data, options, callback)
 
 
 /******************************************************************************
 *
 ******************************************************************************/
-function lwDataBase (path, name, isNew) {
+function lwDataBase (path, name) {
   this.name = name;
   this.path = `${path}/${name}.json`;
-  if (isNew) {
-    this.data = {
-      tables: {
-      }
-    };
+  if (!fs.fs.existsSync(this.path)) {
+    this.data = { tables: {} };
   } else {
     this.data = require(this.path);
   }
@@ -298,10 +294,10 @@ module.exports = {
   *
   ****************************************************************************/
   startup: function (name) {
-    var db = new lwDataBase(this.STORAGE_PATH, name, !fs.fs.existsSync(name));
+    var db = new lwDataBase(this.STORAGE_PATH, name);
     this.dbs[name] = db;
     return db;
-  }
+  },
 
   /****************************************************************************
   *
@@ -311,13 +307,12 @@ module.exports = {
       this.saveToDisk(dbobj);
     }
     delete this.dbs[dbobj.name];
-    delete dbobj;
-  }
+  },
 
   /****************************************************************************
   *
   ****************************************************************************/
   saveToDisk: function (dbobj) {
-    fs.writeFileSync(dbobj.path,JSON.stringify(dbobj));
+    fs.writeFileSync(dbobj.path, JSON.stringify(dbobj.data));
   }
 }

@@ -1,3 +1,4 @@
 DB_DATA/
 .DS_Store*
 node_modules/
+newdb.json
