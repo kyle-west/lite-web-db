@@ -50,7 +50,7 @@ lwDataBase.prototype = {
       tableObj = {
         rows: [],
         details: {
-          length: 0
+          nextIndex: 1
         }
       }
       tableObj.insert = this.insert;
@@ -71,8 +71,7 @@ lwDataBase.prototype = {
   * TABLE SCOPE
   ****************************************************************************/
   insert: function (row) {
-    this.details.length++;
-    row.index = this.details.length;
+    row.index = this.details.nextIndex++;
     this.rows.push(row);
     return row;
   },
@@ -96,17 +95,18 @@ lwDataBase.prototype = {
         break;
 
       case "Array":
-        this.rows.forEach((row) => {
+        for (var i = 0; i < this.rows.length; i++) {
           var match = true;
 
           testSet.forEach((test) => {
-            match = match && self._testRow(row, test);
+            match = match && self._testRow(self.rows[i], test);
           });
 
           if (match) {
-            deletions.push(row);
+            deletions.push(this.rows[i]);
+            this.rows.splice(i, 1);
           }
-        });
+        }
         break;
 
       default:
