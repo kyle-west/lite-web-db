@@ -81,7 +81,9 @@ lwDataBase.prototype = {
 
       case "Array":
         for (var i = 0; i < rowSet.length; i++) {
-          rowSet[i].index = this.details.nextIndex++;
+          if (rowSet.name !== "lastDeletion") {
+            rowSet[i].index = this.details.nextIndex++;
+          }
           this.rows.push(rowSet[i]);
         }
         break;
@@ -139,7 +141,10 @@ lwDataBase.prototype = {
   * TABLE SCOPE
   ****************************************************************************/
   restoreLastDeletion: function () {
-
+    this.lastDeletion.name = "lastDeletion";
+    this.insert(this.lastDeletion);
+    delete this.lastDeletion;
+    return this.rows;
   },
 
 
