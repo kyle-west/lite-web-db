@@ -102,6 +102,35 @@ ${JSON.stringify(table2,null,2)}
 
 
 /****************************************************************************
+* Test the delete feature
+****************************************************************************/
+console.log(`
+TESTING DELETING DATA IN "${db2.name}"
+---------------------------------------------
+
+DELETE "test1" WHERE index IN (1,3);
+${JSON.stringify(table2.delete(updateTestB))}
+
+DELETE "test1" WHERE NOT index IN (1,2,3) AND col4 IN ('THU','FRI');
+${JSON.stringify(table2.delete(updateTestC))}
+
+SHOW "test1"
+${JSON.stringify(table2,null,2)}
+`);
+
+table2.delete();
+console.log(`
+DELETE "test1"
+${JSON.stringify(table2,null,2)}
+
+---------------------------------------------
+`);
+
+
+
+
+
+/****************************************************************************
 * Test the data retieval
 ****************************************************************************/
 const table1 = db1.getTable("test1");

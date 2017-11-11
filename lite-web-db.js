@@ -31,6 +31,7 @@ function lwDataBase (path, name, isNew) {
     self.data.tables[table].query  = self.query;
     self.data.tables[table]._testRow  = self._testRow;
     self.data.tables[table].update  = self.update;
+    self.data.tables[table].delete  = self.delete;
   });
 }
 
@@ -56,6 +57,7 @@ lwDataBase.prototype = {
       tableObj.query  = this.query;
       tableObj._testRow  = this._testRow;
       tableObj.update  = this.update;
+      tableObj.delete  = this.delete;
       this.data.tables[table] = tableObj;
     }
 
@@ -74,6 +76,47 @@ lwDataBase.prototype = {
     this.rows.push(row);
     return row;
   },
+
+
+  /****************************************************************************
+  * TABLE SCOPE
+  ****************************************************************************/
+  delete: function (testSet) {
+    var deletions = [];
+    var self = this;
+
+    switch (typeOf(testSet)) {
+      case "Object":
+        for (var i = 0; i < this.rows.length; i++) {
+          if (self._testRow(this.rows[i], testSet)) {
+            deletions.push(this.rows[i]);
+            this.rows.splice(i, 1);
+          }
+        }
+        break;
+
+      case "Array":
+        this.rows.forEach((row) => {
+          var match = true;
+
+          testSet.forEach((test) => {
+            match = match && self._testRow(row, test);
+          });
+
+          if (match) {
+            deletions.push(row);
+          }
+        });
+        break;
+
+      default:
+        deletions = this.rows;
+        this.rows = [];
+    }
+    this.lastDeletion = deletions;
+    return deletions;
+  },
+
 
 
   /****************************************************************************
