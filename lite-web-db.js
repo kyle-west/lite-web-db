@@ -32,6 +32,7 @@ function lwDataBase (path, name, isNew) {
     self.data.tables[table]._testRow  = self._testRow;
     self.data.tables[table].update  = self.update;
     self.data.tables[table].delete  = self.delete;
+    self.data.tables[table].restoreLastDeletion = self.restoreLastDeletion;
   });
 }
 
@@ -58,6 +59,7 @@ lwDataBase.prototype = {
       tableObj._testRow  = this._testRow;
       tableObj.update  = this.update;
       tableObj.delete  = this.delete;
+      tableObj.restoreLastDeletion = this.restoreLastDeletion;
       this.data.tables[table] = tableObj;
     }
 
@@ -70,10 +72,26 @@ lwDataBase.prototype = {
   /****************************************************************************
   * TABLE SCOPE
   ****************************************************************************/
-  insert: function (row) {
-    row.index = this.details.nextIndex++;
-    this.rows.push(row);
-    return row;
+  insert: function (rowSet) {
+    switch (typeOf(rowSet)) {
+      case "Object":
+        rowSet.index = this.details.nextIndex++;
+        this.rows.push(rowSet);
+        break;
+
+      case "Array":
+        for (var i = 0; i < rowSet.length; i++) {
+          rowSet[i].index = this.details.nextIndex++;
+          this.rows.push(rowSet[i]);
+        }
+        break;
+
+      default:
+        deletions = this.rows;
+        this.rows = [];
+    }
+
+    return rowSet;
   },
 
 
@@ -115,6 +133,13 @@ lwDataBase.prototype = {
     }
     this.lastDeletion = deletions;
     return deletions;
+  },
+
+  /****************************************************************************
+  * TABLE SCOPE
+  ****************************************************************************/
+  restoreLastDeletion: function () {
+
   },
 
 

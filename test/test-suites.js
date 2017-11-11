@@ -35,10 +35,11 @@ ${JSON.stringify(db2,null,2)}
 * Test the data insertion
 ****************************************************************************/
 const table2 = db2.getTable('test1');
-const insert1 = { col1: "one",   col2: "123", col3: "blue",  col4:"MON" };
-const insert2 = { col1: "two",   col2: "456", col3: "red",   col4:"TUE" };
-const insert3 = { col1: "three", col2: "789", col3: "green", col4:"WED" };
-const insert4 = { col1: "four",  col2: "012", col3: "black", col4:"THU" };
+const insert1 = { col1: "one",   col2: "123", col3: "blue",   col4:"MON" };
+const insert2 = { col1: "two",   col2: "456", col3: "red",    col4:"TUE" };
+const insert3 = { col1: "three", col2: "789", col3: "green",  col4:"WED" };
+const insert4 = { col1: "four",  col2: "012", col3: "black",  col4:"THU" };
+const insert5 = { col1: "five",  col2: "983", col3: "orange", col4:"FRI" };
 console.log(`
 TESTING INSERTING INTO A EMPTY DATABASE "${db2.name}"
 ---------------------------------------------
@@ -46,8 +47,7 @@ TESTING INSERTING INTO A EMPTY DATABASE "${db2.name}"
 INSERT INTO "test1" VALUES (
   ${JSON.stringify(table2.insert(insert1))},
   ${JSON.stringify(table2.insert(insert2))},
-  ${JSON.stringify(table2.insert(insert3))},
-  ${JSON.stringify(table2.insert(insert4))}
+  ${JSON.stringify(table2.insert([insert3,insert4,insert5]))}
 );
 
 SHOW "test1"
@@ -122,6 +122,12 @@ table2.delete();
 console.log(`
 DELETE "test1"
 ${JSON.stringify(table2,null,2)}
+`);
+
+table2.restoreLastDeletion();
+console.log(`
+ROLLBACK "test1"
+${JSON.stringify(table2,null,2)}
 
 ---------------------------------------------
 `);
@@ -179,5 +185,16 @@ ${JSON.stringify(table1.query(search3b))}
 
 WHERE spiritAnimal = "bear" AND NOT password = "bearsR0ck"
 ${JSON.stringify(table1.query(search4))}
+---------------------------------------------
+`);
+
+
+/****************************************************************************
+* Test the save to disk feature
+****************************************************************************/
+console.log(`
+TESTING SAVING DATABASE TO DISK "${db2.name}"
+---------------------------------------------
+
 ---------------------------------------------
 `);
