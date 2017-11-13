@@ -27,5 +27,8 @@
   "bugs": {
     "url": "https://github.com/kyle-west/lite-web-db/issues"
   },
-  "homepage": "https://github.com/kyle-west/lite-web-db#readme"
+  "homepage": "https://github.com/kyle-west/lite-web-db#readme",
+  "dependencies": {
+    "file-system": "^2.2.2"
+  }
 }
