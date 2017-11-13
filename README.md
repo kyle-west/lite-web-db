@@ -93,7 +93,14 @@ table.query(); /* RETURNS ===> [
 ```js
 const test = { key: "index", is: 4 };
 const newData = { english: "FOUR" };
-table.update(test, newData);
+table.update(newData, test);
+```
+
+```js
+var toUpper = function (value) {
+  return value.toUpperCase();
+};
+table.update({ english: toUpper, french: toUpper });
 ```
 
 ### Deleting

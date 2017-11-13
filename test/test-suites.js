@@ -68,31 +68,40 @@ const updateTestC = [
   {key: "col4",  includes: ["THU","FRI"]}
 ];
 const updateSetC  = {col2: "LAST"};
+const updateSetD  = {col1: function (value) {
+  return value.toUpperCase();
+}};
 
 console.log(`
 TESTING UPDATING DATA IN "${db2.name}"
 ---------------------------------------------
 
 UPDATE "test1" SET col2 = "INDEX IS 2" WHERE index = 2;
-${JSON.stringify(table2.update(updateTestA, updateSetA))}
+${JSON.stringify(table2.update(updateSetA, updateTestA))}
 
 UPDATE "test1" SET col2 = "ODD INDEX" WHERE index IN (1,3);
-${JSON.stringify(table2.update(updateTestB, updateSetB))}
+${JSON.stringify(table2.update(updateSetB, updateTestB))}
 
 UPDATE "test1" SET col2 = "LAST" WHERE NOT index IN (1,2,3) AND col4 IN ('THU','FRI');
-${JSON.stringify(table2.update(updateTestC, updateSetC))}
+${JSON.stringify(table2.update(updateSetC, updateTestC))}
 
 SHOW "test1"
 ${JSON.stringify(table2,null,2)}
 `);
 
-table2.update({}, {col3:"THIRD COLUMN"});
+table2.update({col3:"THIRD COLUMN"});
 console.log(`
 UPDATE "test1" SET col3 = "THIRD COLUMN"; SHOW "test1"
 ${JSON.stringify(table2,null,2)}
 `);
 
-table2.update(null, {index:2});
+table2.update(updateSetD);
+console.log(`
+UPDATE "test1" SET col1 = upperCase(col1); SHOW "test1"
+${JSON.stringify(table2,null,2)}
+`);
+
+table2.update({index:2});
 console.log(`
 UPDATE "test1" SET index = 2; SHOW "test1"
 ${JSON.stringify(table2,null,2)}

@@ -148,7 +148,7 @@ lwDataBase.prototype = {
   /****************************************************************************
   * TABLE SCOPE
   ****************************************************************************/
-  update: function (testSet, set) {
+  update: function (set, testSet) {
     var updates = [];
     var self = this;
 
@@ -158,7 +158,11 @@ lwDataBase.prototype = {
           if (self._testRow(row, testSet)) {
             Object.keys(set).forEach((col) => {
               if (col !== "index") {
-                row[col] = set[col];
+                if (typeOf(set[col]) === "Function") {
+                  row[col] = set[col](row[col]);
+                } else {
+                  row[col] = set[col];
+                }
               }
             });
             updates.push(row);
@@ -177,7 +181,11 @@ lwDataBase.prototype = {
           if (match) {
             Object.keys(set).forEach((col) => {
               if (col !== "index") {
-                row[col] = set[col];
+                if (typeOf(set[col]) === "Function") {
+                  row[col] = set[col](row[col]);
+                } else {
+                  row[col] = set[col];
+                }
               }
             });
             updates.push(row);
@@ -189,7 +197,11 @@ lwDataBase.prototype = {
         this.rows.forEach((row) => {
           Object.keys(set).forEach((col) => {
             if (col !== "index") {
-              row[col] = set[col];
+              if (typeOf(set[col]) === "Function") {
+                row[col] = set[col](row[col]);
+              } else {
+                row[col] = set[col];
+              }
             }
           });
           updates.push(row);
